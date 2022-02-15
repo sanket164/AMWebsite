@@ -1,0 +1,11 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div style="background-color: #ca3b3b; width: 350px; height: 120px;">
+        <img class="img-responsive" src="images/logo.png" style="width: 331px; height: 109px;" />
+    </div>
+</body>
+</html>
