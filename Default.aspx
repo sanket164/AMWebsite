@@ -56,7 +56,7 @@
             return true;
         }
     </script>
-    <div class="container" style="background-color: #cdd7e0;">
+    <%--<div class="container" style="background-color: #cdd7e0;">
         <div class="row">
             <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1" style="padding-top: 22px; padding-bottom: 6px;">
                 <img src="images/Banner_icon_blue.png" style="width: 80px;">
@@ -69,7 +69,7 @@
                 <p>Team ,Anant matrimony</p>
             </div>
         </div>
-    </div>
+    </div>--%>
     <div class="content">
 
         <div class="container-fluid home-slider">
