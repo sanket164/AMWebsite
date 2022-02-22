@@ -10,7 +10,22 @@
     </script>
     <asp:ScriptManager ID="ScriptManager1" runat="server" EnableCdn="false">
     </asp:ScriptManager>
+    <script lang="Javascript" type="text/javascript">
+        function isAlphabetKey(evt) {
+            const element = document.getElementById("errmsgWorkCity");
+            //element.innerHTML = "";
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if ((charCode <= 93 && charCode >= 65) || (charCode <= 122 && charCode >= 97)) {
 
+                return true;
+            }
+            //alert("Only A-Z or a-z");
+            //element.innerHTML = "Only characters, no number.";
+            //document.getElementById("errmsgWorkCity").innerText = "Only characters, no number.";
+            return false;
+
+        }
+    </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
 
@@ -241,9 +256,9 @@
                                 CssClass="text-danger" ErrorMessage="Select Visa Country, field is required." />--%>
                                         </div>
                                         <div class="form-group">
-                                            <label>Work Address</label>
-                                            <asp:TextBox class="form-control" ID="txtWorkAddress" runat="server" type="text"></asp:TextBox>
-
+                                            <label>Work City</label>
+                                            <asp:TextBox class="form-control" onkeypress="return isAlphabetKey(event)" ID="txtWorkAddress" MaxLength="15" runat="server" type="text"></asp:TextBox>
+                                            <p style="color: red; float: right; width: 70%;" id="errmsgWorkCity"></p>
                                         </div>
                                     </div>
                                 </div>
