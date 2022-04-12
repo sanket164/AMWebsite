@@ -25,7 +25,17 @@
             return false;
 
         }
+        function AllowAlphabet(e) {
+            isIE = document.all ? 1 : 0
+            keyEntry = !isIE ? e.which : event.keyCode;
+            if (((keyEntry >= '65') && (keyEntry <= '90')) || ((keyEntry >= '97') && (keyEntry <= '122')) || (keyEntry == '46') || (keyEntry == '32') || keyEntry == '45')
+                return true;
+            else {               
+                return false;
+            }
+        }
     </script>
+
     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
 
@@ -442,7 +452,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>About Myself</label>
-                                            <asp:TextBox class="form-control" ID="txtAboutMySelf" runat="server" type="text" TextMode="MultiLine" Style="resize: both;"></asp:TextBox>
+                                            <asp:TextBox class="form-control" ID="txtAboutMySelf" onkeypress="return AllowAlphabet(event)" runat="server" type="text" TextMode="MultiLine" Style="resize: both;"></asp:TextBox>
                                         </div>
                                     </div>
                                 </div>

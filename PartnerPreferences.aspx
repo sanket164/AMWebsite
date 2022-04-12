@@ -3,6 +3,17 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="Server">
     <link href="/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
     <script src="/js/bootstrap-multiselect.js" type="text/javascript"></script>
+    <script>
+        function AllowAlphabet(e) {
+            isIE = document.all ? 1 : 0
+            keyEntry = !isIE ? e.which : event.keyCode;
+            if (((keyEntry >= '65') && (keyEntry <= '90')) || ((keyEntry >= '97') && (keyEntry <= '122')) || (keyEntry == '46') || (keyEntry == '32') || keyEntry == '45')
+                return true;
+            else {
+                return false;
+            }
+        }
+    </script>
     <div class="content registration">
         <div class="assistance">
             <a href="ContactUs" target="_blank">
@@ -108,7 +119,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>About Life Partner</label>
-                                <asp:TextBox class="form-control" ID="txtAboutLifePartner" runat="server" type="text" TextMode="MultiLine"></asp:TextBox>
+                                <asp:TextBox class="form-control" onkeypress="return AllowAlphabet(event)" ID="txtAboutLifePartner" runat="server" type="text" TextMode="MultiLine"></asp:TextBox>
                             </div>
                         </div>
                     </div>

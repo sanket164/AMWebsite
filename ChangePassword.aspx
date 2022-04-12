@@ -12,7 +12,7 @@
                 <div class="col-md-9">
                     <div class="change-pw registration cont-form">
                         <div class="form-horizontal">                            
-                            <div class="control-group">
+                            <div class="control-group" id="CurrentPassword" runat="server">
                                 <div class="form-group">
                                     <label>Current Password</label> <label style="color:red;">  *</label>
                                     <%--<input type='password' class="form-control" />--%>

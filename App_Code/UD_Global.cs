@@ -9,6 +9,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Net.Mail;
+using System.Security.Cryptography;
 
 /// <summary>
 /// Summary description for UD_Global
@@ -18,6 +19,10 @@ public class UD_Global
     dbInteraction objdb = new dbInteraction();
     SqlConnection objConnection = new SqlConnection();
     string strSql = "";
+    TripleDESCryptoServiceProvider TripleDes;
+    // Must be at least 8 characters
+    protected string _keyString = "CHANGEME@123";
+    protected byte[] _keyBytes = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18 };
 
     public UD_Global()
     {
@@ -48,7 +53,7 @@ public class UD_Global
         DataTable dtProfileCreated = new DataTable();
         try
         {
-            DataSet ds = objdb.ExecuteDataset("SelectCombo_tbl_ProfileCreatedBy", searchtext);            
+            DataSet ds = objdb.ExecuteDataset("SelectCombo_tbl_ProfileCreatedBy", searchtext);
             dtProfileCreated = ds.Tables[0];
             return dtProfileCreated;
         }
@@ -582,13 +587,13 @@ public class UD_Global
         return dtInterestReceived;
     }
 
-    public string ChangePassword(long MemberCode, string EmailId, string OldPassword, string NewPassword)
+    public string ChangePassword(long MemberCode, string EmailId, string OldPassword, string NewPassword,int type)
     {
         string IsValid = "";
         DataTable dtResult = new DataTable();
         try
         {
-            DataSet ds = objdb.ExecuteDataset("ChangePassword", EmailId, MemberCode, OldPassword, NewPassword);
+            DataSet ds = objdb.ExecuteDataset("ChangePassword", EmailId, MemberCode, OldPassword, NewPassword,1);
             IsValid = "success";
         }
         catch (Exception ex)
@@ -1058,29 +1063,23 @@ public class UD_Global
 
     public bool SendMail(string ToEmailAddres, string MailSubject, string MailBody, bool HTML, string FromMianAdd, string Password)
     {
-
         try
         {
-            MailMessage mail = new MailMessage();
-            SmtpClient SmtpServer = new SmtpClient("anantmatrimony.com");
+            MailMessage message = new MailMessage();
+            SmtpClient smtp = new SmtpClient();
+            message.From = new MailAddress(FromMianAdd, "Anant Matrimony");
+            message.To.Add(new MailAddress(ToEmailAddres));
 
-            mail.From = new MailAddress(FromMianAdd);
-            mail.To.Add(ToEmailAddres);
-            //mail.CC.Add("sanket164@gmail.com");
-            mail.Subject = MailSubject;
-            mail.Body = MailBody;
-            //Attachment attachment = new Attachment(filename);
-            //mail.Attachments.Add(attachment);
-            if (HTML)
-            {
-                mail.IsBodyHtml = true;
-            }
-
-            SmtpServer.Port = 587;
-            SmtpServer.Credentials = new System.Net.NetworkCredential(FromMianAdd, Password);
-            SmtpServer.EnableSsl = false;
-
-            SmtpServer.Send(mail);
+            message.Subject = MailSubject;
+            message.IsBodyHtml = true; //to make message body as html                  
+            message.Body = MailBody;
+            smtp.Port = 587;
+            smtp.Host = "anantmatrimony.com"; //for gmail host  
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(FromMianAdd, Password);
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            smtp.Send(message);
 
             return true;
         }
@@ -1249,10 +1248,84 @@ public class UD_Global
             return dtData;
         }
         catch (Exception ex)
-        {   
+        {
             throw;
         }
         return dtData;
     }
 
+    public string CreateToken()
+    {
+        byte[] time = BitConverter.GetBytes(DateTime.Now.ToBinary());
+        byte[] key = Guid.NewGuid().ToByteArray();
+        string token = Convert.ToBase64String(time.Concat(key).ToArray());
+        token = token.Replace("+", "pluse");
+        return token;
+    }
+    public bool DecodeToken(string token, int timeinterval)
+    {
+        token = token.Replace("pluse","+");
+        byte[] data = Convert.FromBase64String(token);
+        DateTime when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
+        if (when < DateTime.Now.AddHours(-timeinterval))
+            return false;
+        return true;
+    }
+    public string Encrypt(string text)
+    {
+        try
+        {
+            byte[] keyData = Encoding.UTF8.GetBytes(_keyString.Substring(0, 8));
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            byte[] textData = Encoding.UTF8.GetBytes(text);
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms,
+              des.CreateEncryptor(keyData, _keyBytes), CryptoStreamMode.Write);
+            cs.Write(textData, 0, textData.Length);
+            cs.FlushFinalBlock();
+            return GetString(ms.ToArray());
+        }
+        catch (Exception)
+        {
+            return String.Empty;
+        }
+    }
+    protected string GetString(byte[] data)
+    {
+        StringBuilder results = new StringBuilder();
+
+        foreach (byte b in data)
+            results.Append(b.ToString("X2"));
+
+        return results.ToString();
+    }
+    public string Decrypt(string Encrypttext)
+    {
+        try
+        {
+            byte[] keyData = Encoding.UTF8.GetBytes(_keyString.Substring(0, 8));
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            byte[] textData = GetBytes(Encrypttext);
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms,
+              des.CreateDecryptor(keyData, _keyBytes), CryptoStreamMode.Write);
+            cs.Write(textData, 0, textData.Length);
+            cs.FlushFinalBlock();
+            return Encoding.UTF8.GetString(ms.ToArray());
+        }
+        catch (Exception)
+        {
+            return String.Empty;
+        }
+    }
+    protected byte[] GetBytes(string data)
+    {
+        // GetString() encodes the hex-numbers with two digits
+        byte[] results = new byte[data.Length / 2];
+
+        for (int i = 0; i < data.Length; i += 2)
+            results[i / 2] = Convert.ToByte(data.Substring(i, 2), 16);
+
+        return results;
+    }
 }

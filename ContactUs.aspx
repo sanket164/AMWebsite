@@ -32,8 +32,8 @@
                         </ul>
                         <ul class="cont-info">
                             <li><i class="fas fa-clock"></i>&nbsp;&nbsp;Monday To Saturday 11:00 AM to 06:00 PM</li>
-                            <li><i>&nbsp;&nbsp;&nbsp;&nbsp;</i>&nbsp;&nbsp;Sunday closed</li>
-                            <li style="font-style: italic; color: red;">Temporary timing changes due to covid-19 effect</li>
+                            <li><i>&nbsp;&nbsp;&nbsp;&nbsp;</i>&nbsp;&nbsp;Sunday open with appointment</li>
+                            <%--<li style="font-style: italic; color: red;">Temporary timing changes due to covid-19 effect</li>--%>
                         </ul>
                         <div class="social">
                             <ul class="fa-ul">

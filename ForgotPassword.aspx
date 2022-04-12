@@ -36,7 +36,8 @@
                                     <div class="col-md-6 left">
                                         <form action="">
                                             <div class="form-group">
-                                                <span class="text-success" style="display: none;" runat="server" id="lblSuccessMsg">Password send on your registered Mobile number and Email ID</span>
+                                                <span class="text-success" style="display: none;font-weight:bold;" runat="server" id="lblSuccessMsg">Password send on your registered Mobile number and Email ID</span>
+                                                <span class="text-warning" style="display: none;font-weight:bold;" runat="server" id="lblwarningMsg">Please check spam, sometime mail received in spam folder</span>
                                             </div>
                                             <div class="form-group">
                                                 <span class="text-danger" style="display: none;" runat="server" id="lblErrmsg">Invalid Email ID and Mobile Number</span>

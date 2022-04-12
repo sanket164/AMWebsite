@@ -29,6 +29,7 @@ public partial class ForgotPassword : System.Web.UI.Page
         {
             lblErrmsg.Attributes.Add("style", "display:none");
             lblSuccessMsg.Attributes.Add("style", "display:none");
+            lblwarningMsg.Attributes.Add("style", "display:none");
 
             string strEmail = txtEmail.Text;
             string strMobileNumber = txtMobileNo.Text;
@@ -38,15 +39,18 @@ public partial class ForgotPassword : System.Web.UI.Page
                 if (dtDetails.Rows.Count > 0)
                 {
                     lblSuccessMsg.Attributes.Add("style", "display:block; font-weight: bold;");
+                    lblwarningMsg.Attributes.Add("style", "display:block; font-weight: bold;");
                     string strMsg = " Your ProfileId : " + Convert.ToString(dtDetails.Rows[0]["profileid"]);
                     strMsg += " And Password : " + Convert.ToString(dtDetails.Rows[0]["password"]);
+                    string email = objGlobal.Encrypt(strEmail);
+                    string strResetLink = "https://www.anantmatrimony.com/ChangePassword.aspx?guid=" + email + "&token=" + objGlobal.CreateToken() + "";
                     objGlobal.SendSMS(strMobileNumber, strMsg);
                     string strHTML = "<html> ";
                     strHTML += " <head> ";
                     strHTML += " <title>Anant Matrimony</title> ";
                     strHTML += " <link href='https://fonts.googleapis.com/css?family=Lato:400,500,600,700' rel='stylesheet' /> ";
                     strHTML += " </head> ";
-                    strHTML += " <body style='font-family: 'Lato', sans-serif;background-color: #ffffff;margin: 0px;padding: 0px;width: 100%;font-size: 15px;font-weight: 400;color: #323232;line-height: 18px;text-align:left;'> ";
+                    strHTML += " <body style='font-family: Lato, sans-serif;background-color: #ffffff;margin: 0px;padding: 0px;width: 100%;font-size: 15px;font-weight: 400;color: #323232;line-height: 18px;text-align:left;'> ";
                     strHTML += "  <table width='100%' border='0' align='center' cellpadding='0' cellspacing='0' class='contentbg'> ";
                     strHTML += " <tr> <td valign='top'>  ";
                     strHTML += "  <table width='50%' border='0' cellspacing='0' cellpadding='0' align='center'> ";
@@ -68,12 +72,17 @@ public partial class ForgotPassword : System.Web.UI.Page
                     strHTML += " <tr> ";
                     strHTML += " <td width='100%' valign='top' style='padding-bottom: 16px; text-align: left; font-size: 22px; font-weight: 600; color: #323232; line-height: 44px; border-bottom: 1px solid #e8e8e8; '> ";
                     strHTML += " <p>Hello " + Convert.ToString(dtDetails.Rows[0]["MemberName"]) + ",</p> ";
-                    strHTML += " <p>Your ProfileId : " + Convert.ToString(dtDetails.Rows[0]["profileid"]) + " <br />Password : " + Convert.ToString(dtDetails.Rows[0]["password"]) + "  </p> ";
+                    //strHTML += " <p>Your ProfileId : " + Convert.ToString(dtDetails.Rows[0]["profileid"]) + " <br />Password : " + Convert.ToString(dtDetails.Rows[0]["password"]) + "  </p> ";
+                    strHTML += " <p>You are Requesting for the Password Reset </p> <p> Password Resetlink : <a href=" + strResetLink + ">Click here</a> </p>";
                     strHTML += " <p>Visit us on : <a href='www.anantmatrimony.com' target='_blank'>www.anantmatrimony.com</a></p>";
                     strHTML += " </td> </tr> <tr> ";
                     strHTML += " <td class='footerheading' width='100%' valign='top' style='padding-bottom:16px;text-align:center;font-size: 22px;font-weight: 600;color: #323232;line-height: 44px;'>For More Details, Call Us!</td> ";
                     strHTML += " </tr> <tr> ";
-                    strHTML += " <td width='100%' valign='top' style='padding-bottom:16px;border-bottom:1px solid #e8e8e8;font-size: 35px;font-weight: 600;color: #f54d56;line-height: 24px;text-align:center;'>9428412065/9998489093</td> ";
+                    strHTML += " <td width='100%' valign='top' style='padding-bottom:16px;border-bottom:1px solid #e8e8e8;font-size: 35px;font-weight: 600;color: #f54d56;line-height: 24px;text-align:center;'>9428412065/9998489093</td> ";                    
+                    strHTML += " </tr> <tr> ";
+                    strHTML += " <td class='footerheading' width='100%' valign='top' style='padding-bottom:16px;text-align:center;font-size: 22px;font-weight: 600;color: #323232;line-height: 44px;'>Whatsapp us on!</td> ";
+                    strHTML += " </tr> <tr> ";
+                    strHTML += " <td width='100%' valign='top' style='padding-bottom:16px;border-bottom:1px solid #e8e8e8;font-size: 35px;font-weight: 600;color: #f54d56;line-height: 24px;text-align:center;'>9998489093</td> ";
                     strHTML += " </tr> <tr> ";
                     strHTML += " <td width='100%' valign='top' style='padding-bottom: 16px; border-bottom: 1px solid #e8e8e8; color: #323232; line-height: 24px; text-align: justify; '> ";
                     strHTML += " <p style=' padding: 0px; margin: 0px; margin-top: 15px;'>425, 4th Floor, Saman Complex,</p> ";
@@ -95,7 +104,7 @@ public partial class ForgotPassword : System.Web.UI.Page
                     strHTML += "  </td> </tr> </table> </td>  </tr> </table> </td> </tr> </table> </td> </tr> ";
                     strHTML += " </table> </td> </tr> </table> </body> </html>";
                     objGlobal.SendMail(strEmail, "AnantMatrimony : User details", strHTML, true, "users@anantmatrimony.com", "Changeme@123");
-                    
+
                 }
                 else
                 {
@@ -106,7 +115,7 @@ public partial class ForgotPassword : System.Web.UI.Page
             {
                 lblErrmsg.Attributes.Add("style", "display:block");
             }
-            
+
         }
         catch (Exception ex)
         {
